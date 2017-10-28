@@ -1,0 +1,68 @@
+{% extends 'index.html' %}
+
+
+{% block content %}
+
+        <li><a href="{% url 'userauth:login' %}" >Login</a></li>
+
+
+
+
+    <div class="main-content">
+
+        <!-- You only need this form and the form-mini.css -->
+
+
+        <div class="form-mini-container col-lg-offset-3" style="width:355px; background:#ccc;">
+
+
+
+            <form class="form-mini" action='' method="post" >
+            {% csrf_token %}
+
+                <div class="form-row">
+                     <label>
+                            <span>Username</span>
+                            {{ form.username }}
+                        </label>
+                </div>
+
+                <div class="form-row">
+                     <label>
+                            <span>Email</span>
+                            {{ form.email }}
+                        </label>
+                </div>
+
+                <div class="form-row">
+                     <label>
+                            <span>Confirm Email</span>
+                            {{ form.email2 }}
+                        </label>
+                </div>
+
+                <div class="form-row">
+                    <label>
+                            <span>Password</span>
+                            {{ form.password }}
+                        </label>
+                </div>
+
+                <div class="form-row form-last-row col-lg-offset-4">
+                    <button type="submit">Submit</button>
+                </div>
+
+            </form>
+        </div>
+
+
+
+          {% if messages %}
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+          {% endif %}
+
+    </div>
+
+{%endblock%}

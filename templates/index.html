@@ -1,0 +1,181 @@
+
+{% load staticfiles i18n %}
+{% load static%}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/print.css' %}" media="print">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Steganography</title>
+  </head>
+
+  <body>
+      
+  
+    <div class="container">
+
+   <div class="jumbotron">
+      {% block content %}
+      
+      <div class="page-header">
+          <h2 align='center'>{{title}}</h2>
+          
+        </div>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h3>
+
+
+<p><input align='center' type="file" id="file" accept="image/*" /></p>
+<div class="col-lg-offset-1" style="width:155px; height:100px; background:#ccc;">
+    <img class="col-lg-offset-1" id="target" src="img_girl.jpg" alt="" style="width:100px;height:100px;">
+
+  </div>
+  <div class="col-lg-offset-0" style="width:155px;">
+    <p>Password: <input type="text" id="pass" value="" placeholder="No Password"/></p>
+    
+  </div>
+
+
+  <div class="col-lg-offset-0">
+    
+  <h4>Message</h4>
+  <p>
+  <textarea id="msg" style="width:100%;height:50px;"></textarea>
+  </p>
+  </div>
+
+
+
+<h4>Results</h4>
+<p>
+<div >  <textarea class="hidden" id="result"  style="width:100%;height:250px;" readonly></textarea>
+</div>
+
+</p>
+
+<p>
+<img id="resultimg" style="display:none" src="" />
+</p>
+
+
+
+<div class="container-fluid col-lg-offset-2" >
+
+<a href="javascript: writeIMG()" class="btn btn-info">Encode</a>
+<a href="javascript: readIMG()" class="btn btn-info"><span>Read</span></a>
+</div>
+        </section>
+
+
+      </div>
+    </div>
+    {% endblock content %}
+    
+    </div>
+    </div>
+    
+<script type="text/javascript" src="{% static 'javascripts/jquery.min.js' %}"></script> <!--jQuery is not required by the library. We use it in DEMO page-->
+<!-- CryptoStego JS files.-->
+<script type="text/javascript" src="{% static 'javascripts/sha512.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/utf_8.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/crypto.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/readimg.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/setimg.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
+
+<!-- above scripts equivalent to <script type="text/javascript" src="cryptostego.min.js"></script>-->
+<script type="text/javascript">
+function writeIMG(){
+    $("#resultimg").hide();
+    $("#resultimg").attr('src','');
+    $("#result").html('Processing...');
+    function writefunc(){
+        var selectedVal = '';
+        var selected = $("input[type='radio'][name='mode']:checked");
+        if (selected.length > 0) {
+            selectedVal = selected.val();
+        }
+        var t = writeMsgToCanvas('canvas',$("#msg").val(),$("#pass").val(),selectedVal);
+        if(t!=null){
+            var myCanvas = document.getElementById("canvas");
+            var image = myCanvas.toDataURL("image/png");
+            $("#resultimg").attr('src',image);
+            $("#result").html('Success! Save the result image below and send it to others!');
+            $("#resultimg").show();
+        }
+        $('#msg').val('')
+        $('#pass').val('')
+        $('#resultimg').val('')
+
+
+
+    }
+    loadIMGtoCanvas('file','canvas',writefunc,500);
+}
+function readIMG(){
+    $("#resultimg").hide();
+    $("#result").html('Processing...');
+    function readfunc(){
+        var selectedVal = '';
+        var selected = $("input[type='radio'][name='mode']:checked");
+        if (selected.length > 0) {
+            selectedVal = selected.val();
+        }
+        var t= readMsgFromCanvas('canvas',$("#pass").val(),selectedVal);
+        if(t!=null){
+            t=t.split('&').join('&amp;');
+            t=t.split(' ').join('&nbsp;');
+            t=t.split('<').join('&lt;');
+            t=t.split('>').join('&gt;');
+            t=t.replace(/(?:\r\n|\r|\n)/g, '<br />');
+            $("#result").html(t);
+            $("#result").removeClass("hidden");
+            $('#result').autoResize();
+
+            $("#msg").hide();
+
+
+          
+        }else $("#result").html('ERROR REAVEALING MESSAGE!');
+
+    }
+    loadIMGtoCanvas('file','canvas',readfunc);
+}
+</script>
+
+<script>
+
+  function showImage(src,target) {
+  var fr=new FileReader();
+  // when image is loaded, set the src of the image where you want to display it
+  fr.onload = function(e) { target.src = this.result; };
+  src.addEventListener("change",function() {
+    // fill fr with image data
+    fr.readAsDataURL(src.files[0]);
+  });
+  }
+
+  var src = document.getElementById("file");
+  var target = document.getElementById("target");
+  showImage(src,target);
+
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,46 @@
+{% extends 'index.html' %}
+
+
+{% block content %}
+
+
+
+    <div class="main-content">
+
+        <!-- You only need this form and the form-mini.css -->
+        <li><a href="{% url 'userauth:registerpage' %}" class="active">Registration</a></li>
+
+
+        <div class="form-mini-container col-lg-offset-3" style="width:355px; background:#ccc;">
+
+
+           
+            <form class="form-mini" action='' method="post" >
+            {% csrf_token %}
+
+                <div class="form-row">
+                     <label>
+                            <span>Username</span>
+                            {{ form.username }}
+                        </label>
+                </div>
+
+                <div class="form-row">
+                    <label>
+                            <span>Password</span>
+                            {{ form.password }}
+                        </label>
+                </div>
+
+                <div class="form-row form-last-row col-lg-offset-4">
+                    <button type="submit" >Login</button>
+                </div>
+
+            </form>
+
+             
+        </div>
+
+
+    </div>
+{% endblock %}
